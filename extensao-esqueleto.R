@@ -51,12 +51,36 @@ write_csv2(dados_sinasc_2, "dados_sinasc_2")
 
 # Tarefa 4. Verificar em dados_sinasc_2 a frequência das categorias das seguintes variáveis: LOCNASC, ESTCIVMAE, GESTACAO, GRAVIDEZ, PARTO,
 # SEXO, APGAR5, RACACOR, IDANOMAL, ESCMAE2010, RACACORMAE, TPAPRESENT, TPROBSON, PARIDADE, KOTELCHUCK
+table(dados_sinasc_2$LOCNASC)
+table(dados_sinasc_2$ESTCIVMAE)
+table(dados_sinasc_2$GESTACAO)
+table(dados_sinasc_2$GRAVIDEZ)
+table(dados_sinasc_2$PARTO)
+table(dados_sinasc_2$SEXO)
+table(dados_sinasc_2$APGAR5)
+table(dados_sinasc_2$RACACOR)
+table(dados_sinasc_2$IDANOMAL)
+table(dados_sinasc_2$ESCMAE2010)
+table(dados_sinasc_2$RACACORMAE)
+table(dados_sinasc_2$TPAPRESENT)
+table(dados_sinasc_2$TPROBSON)
+table(dados_sinasc_2$PARIDADE)
+table(dados_sinasc_2$KOTELCHUCK)
 
 
 # Tarefa 5. Atribuir para cada variável de dados_sinasc_2 como sendo NA a categoria de "Não informado ou Ignorado", geralmente com código 9
 # KOTELCHUCK = 9 significa "não informado"   TPROBSON = 11 significa "não classificado por falta de informação"
 # veja o dicionário do SINASC para identificar qual o código das categorias de cada variável
-
+dados_sinasc_2$ESTCIVMAE[dados_sinasc_2$ESTCIVMAE == 9] = NA
+dados_sinasc_2$GESTACAO[dados_sinasc_2$GESTACAO == 9] = NA
+dados_sinasc_2$PARTO[dados_sinasc_2$PARTO == 9] = NA
+dados_sinasc_2$SEXO[dados_sinasc_2$SEXO == 0] = NA
+dados_sinasc_2$APGAR5[dados_sinasc_2$APGAR5 == 99] = NA
+dados_sinasc_2$IDANOMAL[dados_sinasc_2$IDANOMAL == 9] = NA
+dados_sinasc_2$ESCMAE2010[dados_sinasc_2$ESCMAE2010 == 9] = NA
+dados_sinasc_2$TPAPRESENT[dados_sinasc_2$TPAPRESENT == 9] = NA
+dados_sinasc_2$TPROBSON[dados_sinasc_2$TPROBSON == 11] = NA
+dados_sinasc_2$KOTELCHUCK[dados_sinasc_2$KOTELCHUCK == 9] = NA
 
 # Tarefa 6. Atribuir legendas para as categorias das variáveis investigadas na etapa 4.
 # Exemplo: dados_sinasc_2$KOTELCHUCK = factor(dados_sinasc_2$KOTELCHUCK, levels = c(1,2,3,4,5), 
