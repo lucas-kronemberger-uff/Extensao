@@ -44,7 +44,7 @@ dados_sinasc_2 = dados_sinasc_1[UF == "32",]
 # 50: 44142     51: 56673     52: 100672    53: 46122 
 
 # Exportar o arquivo com o nome dados_sinasc_2.csv
-write_csv2(dados_sinasc_2, "dados_sinasc_2")
+write.csv2(dados_sinasc_2, "dados_sinasc_2")
 
 # Ao concluir a Tarefa 3 da Etapa 1 commite e envie para o repositório REMOTO o script e dados_sinasc_2.csv com o comentário "Dados do estado UF (coloque o nome da UF) e script de sua obtenção"
 
@@ -86,6 +86,94 @@ dados_sinasc_2$KOTELCHUCK[dados_sinasc_2$KOTELCHUCK == 9] = NA
 # Exemplo: dados_sinasc_2$KOTELCHUCK = factor(dados_sinasc_2$KOTELCHUCK, levels = c(1,2,3,4,5), 
 # labels = c("Não realizou pré-natal", "Inadequado", "Intermediário", "Adequado",  
 # "Mais que adequado")
+dados_sinasc_2$LOCNASC = factor(dados_sinasc_2$LOCNASC, levels = c(1,2,3,4,5), labels = 
+         c("Hospital", "Outros estabelecimentos de saúde", "Domicílio", "Outros", "Aldeia indígena"))
+
+
+dados_sinasc_2$ESTCIVMAE = factor(dados_sinasc_2$ESTCIVMAE, levels = c(1,2,3,4,5), labels = 
+         c("Solteira", "Casada", "Viúva", "Separada judicialmente/divorciada", "União estável"))
+
+
+dados_sinasc_2$GESTACAO = factor(dados_sinasc_2$GESTACAO, levels = c(1,2,3,4,5,6), labels = 
+         c("Menos de 22 semanas", "22 a 27 semanas", "28 a 31 semanas", "32 a 36 semanas", "37 a 41 semanas", "42 semanas e mais"))
+
+
+dados_sinasc_2$GRAVIDEZ = factor(dados_sinasc_2$GRAVIDEZ, levels = c(1,2,3), labels = 
+         c("Única", "Dupla","Tripla ou mais"))
+
+
+dados_sinasc_2$PARTO = factor(dados_sinasc_2$PARTO, levels = c(1,2), labels = 
+         c("Vaginal", "Cesário"))
+
+
+dados_sinasc_2$SEXO = factor(dados_sinasc_2$SEXO, levels = c(1,2), labels = 
+         c( "Masculino", "Feminino"))
+
+
+dados_sinasc_2$RACACOR = factor(dados_sinasc_2$RACACOR, levels = c(1,2,3,4,5), labels = 
+         c("Branca", "Preta", "Amarela", "Parda", "Indígena"))
+
+
+dados_sinasc_2$IDANOMAL = factor(dados_sinasc_2$IDANOMAL, levels = c(1,2), labels = 
+         c("Sim", "Não"))
+
+
+dados_sinasc_2$ESCMAE2010 = factor(dados_sinasc_2$ESCMAE2010, levels = c(0,1,2,3,4,5), labels = 
+         c("Sem escolaridade", "Fundamental I", "Fundamental II", "Médio", "Superior incompleto", "Superior completo"))
+
+
+dados_sinasc_2$RACACORMAE = factor(dados_sinasc_2$RACACORMAE, levels = c(1,2,3,4,5), labels = 
+         c("Branca", "Preta", "Amarela", "Parda", "Indígena"))
+
+
+dados_sinasc_2$TPAPRESENT = factor(dados_sinasc_2$TPAPRESENT, levels = c(1,2,3), labels = 
+         c("Cefálico", "Pélvica ou podálica", "Transversa"))
+
+
+dados_sinasc_2$TPROBSON = factor(dados_sinasc_2$TPROBSON, levels = c(1,2,3,4,5,6,7,8,9,10), labels = 
+         c("Grupo 1", "Grupo 2 ", "Grupo 3", "Grupo 4", "Grupo 5", "Grupo 6",
+           "Grupo 7", "Grupo 8", "Grupo 9", "Grupo 10" ))
+
+
+dados_sinasc_2$PARIDADE = factor(dados_sinasc_2$PARIDADE, levels = c(1,0), labels = 
+         c("Multípara", "Nulípara"))
+
+
+dados_sinasc_2$KOTELCHUCK = factor(dados_sinasc_2$KOTELCHUCK, levels = c(1,2,3,4,5), labels = 
+         c("Não realizou pré-natal", "Inadequado", "Intermediário", "Adequado",  
+            "Mais que adequado"))
+
+
+
+View(head(dados_sinasc_2))
+
+
+
+
+
+
+
+
+
+
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # ATENçÃO: 1. Na hora de escrever os labels, somente a primeira letra da palavra é maiúscula. Exemplo para SEXO: Feminino e Masculino
 #          2. Nesta Tarefa 6 não crie novas variáveis no banco de dados
