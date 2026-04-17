@@ -142,37 +142,7 @@ dados_sinasc_2$PARIDADE = factor(dados_sinasc_2$PARIDADE, levels = c(1,0), label
 dados_sinasc_2$KOTELCHUCK = factor(dados_sinasc_2$KOTELCHUCK, levels = c(1,2,3,4,5), labels = 
          c("Não realizou pré-natal", "Inadequado", "Intermediário", "Adequado",  
             "Mais que adequado"))
-
-
-
-View(head(dados_sinasc_2))
-
-
-
-
-
-
-
-
-
-
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#Aqui, decidi não incluir a especificação do Fundamental I e Fundamental II na label. Caso seja necessário, eu mudo.
 
 
 # ATENçÃO: 1. Na hora de escrever os labels, somente a primeira letra da palavra é maiúscula. Exemplo para SEXO: Feminino e Masculino
@@ -185,7 +155,24 @@ View(head(dados_sinasc_2))
 # nova variável dados_sinasc_2$F_APGAR5 com APGAR5: < 7: Baixo, >= 7: Normal
 # Atenção para casos de NA em IDADEMAE, PESO e APGAR5
 # Ao categorizar as variáveis, garantir que sejam transformadas em tipo fator
+dados_sinasc_2$F_PESO = ifelse(dados_sinasc_2$PESO < 2500, "Baixo peso",
+                                ifelse(dados_sinasc_2$PESO < 4000, "Peso normal",
+                                       "Macrossomia"))
 
+dados_sinasc_2$F_IDADE = ifelse(dados_sinasc_2$IDADEMAE < 15, "<15",
+                                ifelse(dados_sinasc_2$IDADEMAE <20, "15-19",
+                                       ifelse(dados_sinasc_2$IDADEMAE <25,"20-24",
+                                              ifelse(dados_sinasc_2$IDADEMAE<30, "25-29",
+                                                     ifelse(dados_sinasc_2$IDADEMAE<35,"30-34",
+                                                            ifelse(dados_sinasc_2$IDADEMAE<40,"35-39",
+                                                                   ifelse(dados_sinasc_2$IDADEMAE<45,"40-44",
+                                                                          ifelse(dados_sinasc_2$IDADEMAE<49, "45-49",
+                                                                                 "50+"))))))))
+
+dados_sinasc_2$F_APGAR5 = ifelse(dados_sinasc_2$APGAR5 <7, "Baixo",
+                                 "Normal")
+                                       
+#Professora, eu vi seu comentário a respeito dos casos de NA, mas verificando a base de dados não vi problema. Qual seria o possível erro aqui?
 
 # Tarefa 8. Agregar ao banco de dados_sinasc_2 as informações PESO_P10 e PESO_P90 a partir de Tabela_PIG_Brasil.csv
 # a Tabela PIG informa P10 e P90 dos pesos, de acordo com a idade gestacional
