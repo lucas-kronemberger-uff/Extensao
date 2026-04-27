@@ -180,9 +180,6 @@ dados_sinasc_2$ESTCIV = ifelse(dados_sinasc_2$ESTCIVMAE %in% c("Solteira", "Viú
                                ifelse(dados_sinasc_2$ESTCIVMAE %in% c("Casada", "União estável"), "Com companheiro", NA))
 dados_sinasc_2$ESTCIV = factor(dados_sinasc_2$ESTCIV, levels = c("Sem companheiro","Com companheiro"))
 
-
-#Professora, eu vi seu comentário a respeito dos casos de NA, mas verificando a base de dados não vi problema. Qual seria o possível erro aqui?
-
 # Tarefa 8. Agregar ao banco de dados_sinasc_2 as informações PESO_P10 e PESO_P90 a partir de Tabela_PIG_Brasil.csv
 # a Tabela PIG informa P10 e P90 dos pesos, de acordo com a idade gestacional
 # criar nova variável referente ao peso, de acordo com a idade gestacional, conforme indicado abaixo
@@ -200,8 +197,6 @@ dados_sinasc_2$F_PIG=ifelse(dados_sinasc_2$GRAVIDEZ != "Única", NA,
                                           ifelse(dados_sinasc_2$PESO<=dados_sinasc_2$PESO_P90, "AIG", "GIG"))))
 dados_sinasc_2$F_PIG = factor(dados_sinasc_2$F_PIG, levels = c("PIG","AIG","GIG"))
 
-# criar nova variável referente ao deslocamento materno para realizar o parto, chamado de peregrinação
-# nova variável: dados_sinasc_2$PERIG: Não: CODMUNNASC igual a CODMUNRES, Sim: CODMUNNASC diferente de CODMUNRES
 #tarefas 9 e 10 foram alteradas.
 
 
