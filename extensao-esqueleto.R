@@ -254,5 +254,110 @@ dados_sinasc_2$F_PIG = factor(dados_sinasc_2$F_PIG, levels = c("PIG","AIG","GIG"
 
 # 1. Enviar arquivos para as pastas do repositório da Professora no GitHUb
 # 2. A professora fará o empilhamentos dos dataframes
+TGI_15 = dados_sinasc_2 %>% 
+  filter(IDADEMAE < 15)
+
+library(tidyverse)
+base = dados_sinasc_2 %>% 
+  group_by(CODMUNRES) %>% 
+  summarise(
+    #DESCRIÇÂO
+    ANO = 2015,
+    NIVEL = "MUNICIPIO",
+    #INFORMAÇÕES SOBRE OS NASCIMENTOS
+    TN = n(),
+    #INFORMAÇÕES SOBRE AS GESTANTES
+    TGI_15 = sum(IDADEMAE < 15),
+    TGI_15_19 = sum(IDADEMAE >= 15 & IDADEMAE <= 19),
+    TGI_20_24 = sum(IDADEMAE >= 20 & IDADEMAE <= 24),
+    TGI_25_29 = sum(IDADEMAE >= 25 & IDADEMAE <= 29),
+    TGI_30_34 = sum(IDADEMAE >= 30 & IDADEMAE <= 34),
+    TGI_35_39 = sum(IDADEMAE >= 35 & IDADEMAE <= 39),
+    TGI_40_44 = sum(IDADEMAE >= 40 & IDADEMAE <= 44),
+    TGI_45_49 = sum(IDADEMAE >= 45 & IDADEMAE <= 49),
+    TGI_50 = sum(IDADEMAE > 50),
+    TGIF = sum(IDADEMAE >= 15 & IDADEMAE <= 49),
+    IM_MD = mean(IDADEMAE),
+    IM_DP = sd(IDADEMAE),
+    EM_S = sum(ESCMAE2010 == "Sem escolaridade", na.rm = TRUE),
+    EM_FI = sum(ESCMAE2010 == "Fundamental I", na.rm = TRUE),
+    EM_FII = sum(ESCMAE2010 == "Fundamental II", na.rm = TRUE),
+    EM_M = sum(ESCMAE2010 == "Médio", na.rm = TRUE),
+    EM_SI = sum(ESCMAE2010 == "Superior incompleto", na.rm = TRUE),
+    EM_SC = sum(ESCMAE2010 == "Superior completo", na.rm = TRUE),
+    TGRC_B = sum(RACACORMAE == "Branca", na.rm = T),
+    TGRC_PT = sum(RACACORMAE == "Preta", na.rm = T),
+    TGRC_A = sum(RACACORMAE == "Amarela", na.rm = T),
+    TGRC_PD = sum(RACACORMAE == "Parda", na.rm = T),
+    TGRC_I = sum(RACACORMAE == "Indígena", na.rm = T),
+    TGSC = sum(ESTCIV == "Sem companheiro", na.rm = T),
+    TGCC = sum(ESTCIV == "Com companheiro", na.rm = T),
+    #INFORMAÇÕES SOBRE AS GESTAÇÕES
+    TGU = sum(GRAVIDEZ == "Única", na.rm = T),
+    TGG = sum(GRAVIDEZ == "Dupla" | GRAVIDEZ == "Tripla ou mais", na.rm = T ),
+    TGD_22 = sum(SEMAGESTAC < 22, na.rm = T),
+    TGD_22_27 = sum(SEMAGESTAC >= 22 & SEMAGESTAC <= 27, na.rm = T),
+    TGD_28_31 = sum(SEMAGESTAC >= 28 & SEMAGESTAC <= 31, na.rm = T),
+    TGD_32_36 = sum(SEMAGESTAC >= 32 & SEMAGESTAC <= 36, na.rm = T),
+    TGD_37_41 = sum(SEMAGESTAC >= 37 & SEMAGESTAC <= 41, na.rm = T),
+    TGD_42 = sum(SEMAGESTAC >= 42, na.rm = T),
+    TGD_PRT = sum(SEMAGESTAC < 37, na.rm = T),
+    TGD_AT = sum(SEMAGESTAC >= 37 & SEMAGESTAC <=41, na.rm = T),
+    TGD_PST = sum(SEMAGESTAC >= 42, na.rm = T),
+    DG_MD = mean(SEMAGESTAC, na.rm = T),
+    DG_DP = sd(SEMAGESTAC, na.rm = T),
+    TKC_NR = sum(KOTELCHUCK == "Não realizou pré-natal", na.rm = T),
+    TKC_ID = sum(KOTELCHUCK == "Inadequado", na.rm = T),
+    TKC_IT = sum(KOTELCHUCK == "Intermediário", na.rm = T),
+    TKC_AD = sum(KOTELCHUCK == "Adequado", na.rm = T),
+    TKC_MAD = sum(KOTELCHUCK == "Mais que adequado", na.rm = T),
+    #INFORMAÇÕES SOBRE O PARTO
+    TGPRG_S = sum(PERIG == "Sim", na.rm = T),
+    TGPRG_N = sum(PERIG == "Não", na.rm = T),
+    TPV = sum(PARTO == "Vaginal", na.rm = T),
+    TPC = sum(PARTO == "Cesário", na.rm = T),
+    TRAP_C = sum(TPAPRESENT == "Cefálico", na.rm = T),
+    TRAP_P = sum(TPAPRESENT == "Pélvica ou podálica", na.rm = T),
+    TRAP_T = sum(TPAPRESENT == "Transversa", na.rm = T),
+    TGROB_1 = sum(TPROBSON == "Grupo 1", na.rm = T),
+    TGROB_2 = sum(TPROBSON == "Grupo 2", na.rm = T),
+    TGROB_3 = sum(TPROBSON == "Grupo 3", na.rm = T),
+    TGROB_4 = sum(TPROBSON == "Grupo 4", na.rm = T),
+    TGROB_5 = sum(TPROBSON == "Grupo 5", na.rm = T),
+    TGROB_6 = sum(TPROBSON == "Grupo 6", na.rm = T),
+    TGROB_7 = sum(TPROBSON == "Grupo 7", na.rm = T),
+    TGROB_8 = sum(TPROBSON == "Grupo 8", na.rm = T),
+    TGROB_9 = sum(TPROBSON == "Grupo 9", na.rm = T),
+    TGROB_10 = sum(TPROBSON == "Grupo 10", na.rm = T),
+    TNLOC_H = sum(LOCNASC == "Hospital"),
+    TNLOC_ES = sum(LOCNASC == "Outros estabelecimentos de saúde"),
+    TNLOC_D = sum(LOCNASC == "Domicílio"),
+    TNLOC_O = sum(LOCNASC == "Outros"),
+    TNLOC_AI = sum(LOCNASC == "Aldeia indígena"),
+    #INFORMAÇÕES SOBRE OS RECÉM-NASCIDOS
+    TRS_M = sum(SEXO == "Masculino", na.rm = T),
+    TRS_F = sum(SEXO == "Feminino", na.rm = T),
+    TRRC_B = sum(RACACOR == "Branca", na.rm = T),
+    TRRC_PT = sum(RACACOR == "Preta", na.rm = T),
+    TRRC_A = sum(RACACOR == "Amarela", na.rm = T),
+    TRRC_PD = sum(RACACOR == "Parda", na.rm = T),
+    TRRC_I = sum(RACACOR == "Indígena", na.rm = T),
+    TRP_BP = sum(PESO < 2500),
+    TRP_N = sum(PESO >= 2500 & PESO<4000),
+    TRP_M = sum(PESO>=4000),
+    PESO_MD = mean(PESO, na.rm = T),
+    PESO_DP =  sd(PESO, na.rm = T),
+    TRPIG_P = sum(GRAVIDEZ == "Única" & F_PIG == "PIG", na.rm = T),
+    TRPIG_A = sum(GRAVIDEZ == "Única" & F_PIG == "AIG", na.rm = T),
+    TRPIG_G = sum(GRAVIDEZ == "Única" & F_PIG == "GIG", na.rm = T),
+    TRAPG5_B = sum(APGAR5 <7, na.rm = T),
+    TRAPG5_N = sum(APGAR5 >= 7, na.rm = T),
+    APG5_MD = mean(APGAR5, na.rm = T),
+    APG5_DP = sd(APGAR5, na.rm = T),
+    TRAC = sum(IDANOMAL == "Sim", na.rm = T),
+    TRSAC = sum(IDANOMAL == "Não", na.rm = T)
+  )
 
 
+view(dados_sinasc)
+table(dados_sinasc_2$IDANOMAL)
