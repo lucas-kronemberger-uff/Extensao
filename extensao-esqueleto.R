@@ -199,66 +199,9 @@ dados_sinasc_2$F_PIG = factor(dados_sinasc_2$F_PIG, levels = c("PIG","AIG","GIG"
 
 #tarefas 9 e 10 foram alteradas.
 
-
-# Tarefa 11: Exporte o banco de dados com o nome SINASC_UF.csv
-
-
-
-# Ao terminar a ETAPA 1 commite e envie para o repositório REMOTO com o comentário "Dados da UF e Script Etapa 1"
-
-
-
-##################################
-# ETAPA 2: BANCO DE DADOS DO SIM
-##################################
-# Só inicie esta Etapa quando a professora orientar
-# ESTANDO NA BRANCH SINASC, NÃO ALTERE NADA NO SCRIPT REFERENTE A ETAPA 2
-
-# Tarefa 1. Leitura do banco de dados Mortalidade_Geral_2015 do SIM 2015 com 1216475 linhas e 87 colunas
-# verificar se a leitura foi feita corretamente e a estrutura dos dados
-# nomeie o banco de dados como dados_sim
-
-
-# Tarefa 2. Reduzir dados_sim apenas para as colunas que serão utilizadas, nomeando este novo banco de dados como dados_sim_1
-# as colunas serão (a informar)
-# nomes das respectivas variáveis: CONTADOR, TIPOBITO, CODMUNNATU, IDADE,  SEXO,  RACACOR,  ESTCIV, ESC2010, 
-# CODMUNRES,  LOCOCOR, CODMUNOCOR, TPMORTEOCO,  OBITOGRAV, OBITOPUERP, CAUSABAS, CAUSABAS_O, TPOBITOCOR, MORTEPARTO
-
-
-
-#####################################################
-# ETAPA 3: OUTROS BANCOS DE DADOS: IBGE, SNIS, ...
-#####################################################
-# Só inicie esta Etapa quando a professora orientar
-# ESTANDO NA BRANCH SINASC, NÃO ALTERE NADA NO SCRIPT REFERENTE A ETAPA 3
-
-# Tarefa 1. Acesso aos bancos de dados e obtenção da informação
-
-
-
-#####################################################################################################
-# ETAPA 4: GERAR BANCO DE DADOS FINAL DO ESTADO, BASEADO NAS ANÁLISES DE SINASC, SIM, IBGE, SNIS,...
-######################################################################################################
-# Só inicie esta Etapa quando a professora orientar
-# ESTANDO NA BRANCH SINASC, NÃO ALTERE NADA NO SCRIPT REFERENTE A ETAPA 4
-
-# Cada aluno gerar um dataframe de uma única linha (referente ao seu estado) com as variáveis na ordem indicada pela professora
-
-
-
-############################################################################################
-# ETAPA 5: EMPILHAMENTO DOS DATAFRAMES DE CADA ESTADO, GERANDO UM DATAFRAME DE 27 LINHAS
-############################################################################################
-# Só inicie esta Etapa quando a professora orientar
-# ESTANDO NA BRANCH SINASC, NÃO ALTERE NADA NO SCRIPT REFERENTE A ETAPA 5
-
-# 1. Enviar arquivos para as pastas do repositório da Professora no GitHUb
-# 2. A professora fará o empilhamentos dos dataframes
-TGI_15 = dados_sinasc_2 %>% 
-  filter(IDADEMAE < 15)
-
+#Habilitando biblioteca que utilizarei(caso não tenha instalado, use install.packages)
 library(tidyverse)
-
+#Cálculo da variável que depende de "dados_sinasc"
 TNRC = dados_sinasc %>% 
   group_by(CODMUNRES) %>% 
   summarise(
@@ -266,7 +209,7 @@ TNRC = dados_sinasc %>%
   )
 
 
-
+#Construção da base com municípios
 base = dados_sinasc_2 %>% 
   group_by(CODMUNRES) %>% 
   summarise(
@@ -276,7 +219,7 @@ base = dados_sinasc_2 %>%
     #INFORMAÇÕES SOBRE OS NASCIMENTOS
     TN = n(),
     TNRCR = sum(if_all(everything(), ~ !is.na(.))),
- 
+    
     #INFORMAÇÕES SOBRE AS GESTANTES
     TGI_15 = sum(IDADEMAE < 15),
     TGI_15_19 = sum(IDADEMAE >= 15 & IDADEMAE <= 19),
@@ -320,9 +263,9 @@ base = dados_sinasc_2 %>%
     TGD_PRT = sum(SEMAGESTAC < 37, na.rm = T),
     TGD_AT = sum(SEMAGESTAC >= 37 & SEMAGESTAC <=41, na.rm = T),
     TGD_PST = sum(SEMAGESTAC >= 42, na.rm = T),
-    TGD_P25 = quantile(SEMAGESTAC, probs = 0.25, na.rm= T),
-    TGD_P50= quantile(SEMAGESTAC, probs = 0.50, na.rm= T),
-    TGD_P75= quantile(SEMAGESTAC, probs = 0.75, na.rm= T),
+    DG_P25 = quantile(SEMAGESTAC, probs = 0.25, na.rm= T),
+    DG_P50= quantile(SEMAGESTAC, probs = 0.50, na.rm= T),
+    DG_P75= quantile(SEMAGESTAC, probs = 0.75, na.rm= T),
     DG_MD = mean(SEMAGESTAC, na.rm = T),
     DG_DP = sd(SEMAGESTAC, na.rm = T),
     TKC_NR = sum(KOTELCHUCK == "Não realizou pré-natal", na.rm = T),
@@ -382,24 +325,14 @@ base = dados_sinasc_2 %>%
 
 base = merge(base, TNRC, all.x = T)
 
-
+#Ajustando posicionamento das colunas
 base = base %>% 
   relocate(CODMUNRES, .after = NIVEL) %>% 
   relocate(TNRC, .after = TN)
 
-
-
-
-TNRC_UF = dados_sinasc_2 %>% 
-  
-  summarise(
-    TNRCR = sum(if_all(everything(), ~ !is.na(.)))
-  )
-
-
-
+#Construção da linha referente a UF como um todo
 base_uf = dados_sinasc_2 %>% 
- 
+  
   summarise(
     #DESCRIÇÂO
     ANO = 2015,
@@ -512,16 +445,69 @@ base_uf = dados_sinasc_2 %>%
     TRAC = sum(IDANOMAL == "Sim", na.rm = T),
     TRSAC = sum(IDANOMAL == "Não", na.rm = T)
   )
-  
 
 
-
-
+#Junção da linha referente à UF e a base com os municípios
 base_final = bind_rows(base_uf,
                        base)
 
 
 
+# Tarefa 11: Exporte o banco de dados com o nome SINASC_UF.csv
+
+write.csv(base_final, "SINASC_UF.csv")
 
 
-view(base_final)
+# Ao terminar a ETAPA 1 commite e envie para o repositório REMOTO com o comentário "Dados da UF e Script Etapa 1"
+
+
+
+##################################
+# ETAPA 2: BANCO DE DADOS DO SIM
+##################################
+# Só inicie esta Etapa quando a professora orientar
+# ESTANDO NA BRANCH SINASC, NÃO ALTERE NADA NO SCRIPT REFERENTE A ETAPA 2
+
+# Tarefa 1. Leitura do banco de dados Mortalidade_Geral_2015 do SIM 2015 com 1216475 linhas e 87 colunas
+# verificar se a leitura foi feita corretamente e a estrutura dos dados
+# nomeie o banco de dados como dados_sim
+
+
+# Tarefa 2. Reduzir dados_sim apenas para as colunas que serão utilizadas, nomeando este novo banco de dados como dados_sim_1
+# as colunas serão (a informar)
+# nomes das respectivas variáveis: CONTADOR, TIPOBITO, CODMUNNATU, IDADE,  SEXO,  RACACOR,  ESTCIV, ESC2010, 
+# CODMUNRES,  LOCOCOR, CODMUNOCOR, TPMORTEOCO,  OBITOGRAV, OBITOPUERP, CAUSABAS, CAUSABAS_O, TPOBITOCOR, MORTEPARTO
+
+
+
+#####################################################
+# ETAPA 3: OUTROS BANCOS DE DADOS: IBGE, SNIS, ...
+#####################################################
+# Só inicie esta Etapa quando a professora orientar
+# ESTANDO NA BRANCH SINASC, NÃO ALTERE NADA NO SCRIPT REFERENTE A ETAPA 3
+
+# Tarefa 1. Acesso aos bancos de dados e obtenção da informação
+
+
+
+#####################################################################################################
+# ETAPA 4: GERAR BANCO DE DADOS FINAL DO ESTADO, BASEADO NAS ANÁLISES DE SINASC, SIM, IBGE, SNIS,...
+######################################################################################################
+# Só inicie esta Etapa quando a professora orientar
+# ESTANDO NA BRANCH SINASC, NÃO ALTERE NADA NO SCRIPT REFERENTE A ETAPA 4
+
+# Cada aluno gerar um dataframe de uma única linha (referente ao seu estado) com as variáveis na ordem indicada pela professora
+
+
+
+############################################################################################
+# ETAPA 5: EMPILHAMENTO DOS DATAFRAMES DE CADA ESTADO, GERANDO UM DATAFRAME DE 27 LINHAS
+############################################################################################
+# Só inicie esta Etapa quando a professora orientar
+# ESTANDO NA BRANCH SINASC, NÃO ALTERE NADA NO SCRIPT REFERENTE A ETAPA 5
+
+# 1. Enviar arquivos para as pastas do repositório da Professora no GitHUb
+# 2. A professora fará o empilhamentos dos dataframes
+
+
+
