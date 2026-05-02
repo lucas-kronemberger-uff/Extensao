@@ -455,7 +455,7 @@ base_final = bind_rows(base_uf,
 
 # Tarefa 11: Exporte o banco de dados com o nome SINASC_UF.csv
 
-write.csv(base_final, "SINASC_UF.csv")
+write.csv(base_final, "SINASC_ES.csv")
 
 
 # Ao terminar a ETAPA 1 commite e envie para o repositório REMOTO com o comentário "Dados da UF e Script Etapa 1"
