@@ -516,15 +516,52 @@ write.csv(dados_sim_2, "dados_sim_2.csv")
 # Tarefa 4. Verificar em dados_sim_2 a frequência das categorias das seguintes variáveis: TIPOBITO, SEXO, RACACOR, 
 # TPMORTEOCO, OBITOGRAV, OBITOPUERP, CAUSABAS, TPOBITOCOR, MORTEPARTO
 
-
+table(dados_sim_2$TIPOBITO) 
+table(dados_sim_2$SEXO)
+table(dados_sim_2$RACACOR)
+table(dados_sim_2$TPMORTEOCO)
+table(dados_sim_2$OBITOGRAV)
+table(dados_sim_2$OBITOPUERP)
+table(dados_sim_2$CAUSABAS)
+table(dados_sim_2$TPOBITOCOR)
+table(dados_sim_2$MORTEPARTO)
+table(dados_sim_2$IDADE)
+table(dados_sim_2$DTOBITO)
+table(dados_sim_2$DTNASC)
+table(dados_sim_2$CODMUNRES)
 # Tarefa 5. Atribuir para cada variável de dados_sim_2 como sendo NA a categoria de "Não informado ou Ignorado", geralmente com código 9
 # veja o dicionário do SIM para identificar qual o código das categorias de cada variável
 # Em variáveis quantitativas como IDADE verificar se existem valores como 99 para NA
+
+dados_sim_2$SEXO[dados_sim_2$SEXO == 0] = NA
+dados_sim_2$TPMORTEOCO[dados_sim_2$TPMORTEOCO == 9] = NA
+dados_sim_2$OBITOGRAV[dados_sim_2$OBITOGRAV == 9] = NA
+dados_sim_2$OBITOPUERP[dados_sim_2$OBITOPUERP == 9] = NA
+dados_sim_2$MORTEPARTO[dados_sim_2$MORTEPARTO == 9] = NA
+dados_sim_2$IDADE[dados_sim_2$IDADE == 999] = NA 
 
 
 # Tarefa 6. Atribuir legendas para as categorias das variáveis qualitativas investigadas na tarefa 4.
 # Exemplo: dados_sim_2$TIPOBITO = factor(dados_sim_2$TIPOBITO, levels = c(1,2), 
 # labels = c("Fetal", "Não fetal")
+dados_sim_2$TIPOBITO = factor(dados_sim_2$TIPOBITO, levels = c(1,2) , labels = 
+                                c("Fetal", "Não fetal"))
+
+dados_sim_2$SEXO = factor(dados_sim_2$SEXO, levels = c(1,2) , labels = 
+                                c("Masculino", "Feminino"))
+
+dados_sim_2$RACACOR = factor(dados_sim_2$RACACOR, levels = c(1,2,3,4,5) , labels = 
+                                c("Branca", "Preta", "Amarela", "Parda", "Indígena"))
+
+dados_sim_2$TPMORTEOCO = factor(dados_sim_2$TPMORTEOCO, levels = c(1,2,3,4,5,8) , labels = 
+                                c("Na gravidez", "No parto","No abortamento", "Até 42 dias após o término do parto", "De 43 dias a 1 ano após o término da gestação", "Não ocorreu nestes períodos"))
+
+dados_sim_2$OBITOGRAV = factor(dados_sim_2$OBITOGRAV, levels = c(1,2) , labels = 
+                                c("Sim", "Não"))
+
+dados_sim_2$OBITOPUERP = factor(dados_sim_2$OBITOPUERP, levels = c(1,2,3) , labels = 
+                                c("Sim, até 42 dias após o parto", "Sim, de 43 dias a 1 ano", "Não"))
+
 
 # ATENçÃO: 1. Na hora de escrever os labels, somente a primeira letra da palavra é maiúscula. Exemplo para SEXO: Feminino e Masculino
 #          2. Nesta Tarefa 6 não crie novas variáveis no banco de dados
