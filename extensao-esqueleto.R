@@ -476,16 +476,28 @@ write.csv(base_final, "SINASC_ES.csv")
 # verificar se a leitura foi feita corretamente e a estrutura dos dados
 # nomeie o banco de dados como dados_sim
 
+dados_sim = read.csv2("Mortalidade_Geral_2015.csv")
+
+View(dados_sim)
+
 
 # Tarefa 2. Reduzir dados_sim apenas para as colunas que serão utilizadas, nomeando este novo banco de dados como dados_sim_1
 # as colunas serão: 1, 3, 4, 8, 9, 10, 11, 14, 17, 35, 36, 37, 47, 77, 84
 # nomes das respectivas variáveis: CONTADOR, TIPOBITO, DTOBITO, DTNASC, IDADE, SEXO, RACACOR, ESC2010, CODMUNRES, TPMORTEOCO, 
 # OBITOGRAV, OBITOPUERP, CAUSABAS, TPOBITOCOR, MORTEPARTO
 
+dados_sim_1 = dados_sim[c(1,3,4,8,9,10,11,14,17,35,36,37,47,77,84)]
+
 # Tarefa 3. Reduzir dados_sim_1 apenas para o estado que o aluno irá trabalhar (utilizar os dois primeiros dígitos de CODMUNRES), nomeando este novo banco de dados como dados_sim_2
 # Códigos das UF: 11: RO, 12: AC, 13: AM, 14: RR, 15: PA, 16: AP, 17: TO, 21: MA, 22: PI, 23: CE, 24: RN
 # 25: PB, 26: PE, 27: AL, 28: SE, 29: BA, 31: MG, 32: ES, 33: RJ, 35: SP, 41: PR, 42: SC, 43: RS
 # 50: MS, 51: MT, 52: GO, 53: DF 
+
+UF_SIM = substr(as.character(dados_sim_1$CODMUNRES), 1, 2)
+dados_sim_2 = dados_sim_1[UF_SIM == "32",]
+
+
+
 
 # observar abaixo o número de óbitos por UF de residência para certificar-se que seu banco de dados está correto
 # 11: 7948      12: 3517      13: 16675     14: 2091      15: 37365     16: 2946       17: 7402
@@ -496,6 +508,7 @@ write.csv(base_final, "SINASC_ES.csv")
 
 # Exportar o arquivo com o nome dados_sim_2.csv
 
+write.csv(dados_sim_2, "dados_sim_2.csv")
 
 # Ao concluir a Tarefa 3 da Etapa 2 commite e envie para o repositório REMOTO o script e dados_sim_2.csv com o comentário "Dados do estado UF (coloque o nome da UF) e script de sua obtenção"
 
@@ -503,15 +516,63 @@ write.csv(base_final, "SINASC_ES.csv")
 # Tarefa 4. Verificar em dados_sim_2 a frequência das categorias das seguintes variáveis: TIPOBITO, SEXO, RACACOR, 
 # TPMORTEOCO, OBITOGRAV, OBITOPUERP, CAUSABAS, TPOBITOCOR, MORTEPARTO
 
-
+table(dados_sim_2$TIPOBITO) 
+table(dados_sim_2$SEXO)
+table(dados_sim_2$RACACOR)
+table(dados_sim_2$TPMORTEOCO)
+table(dados_sim_2$OBITOGRAV)
+table(dados_sim_2$OBITOPUERP)
+table(dados_sim_2$CAUSABAS)
+table(dados_sim_2$TPOBITOCOR)
+table(dados_sim_2$MORTEPARTO)
+table(dados_sim_2$IDADE)
+table(dados_sim_2$DTOBITO)
+table(dados_sim_2$DTNASC)
+table(dados_sim_2$CODMUNRES)
 # Tarefa 5. Atribuir para cada variável de dados_sim_2 como sendo NA a categoria de "Não informado ou Ignorado", geralmente com código 9
 # veja o dicionário do SIM para identificar qual o código das categorias de cada variável
 # Em variáveis quantitativas como IDADE verificar se existem valores como 99 para NA
+
+dados_sim_2$SEXO[dados_sim_2$SEXO == 0] = NA
+dados_sim_2$TPMORTEOCO[dados_sim_2$TPMORTEOCO == 9] = NA
+dados_sim_2$OBITOGRAV[dados_sim_2$OBITOGRAV == 9] = NA
+dados_sim_2$OBITOPUERP[dados_sim_2$OBITOPUERP == 9] = NA
+dados_sim_2$MORTEPARTO[dados_sim_2$MORTEPARTO == 9] = NA
+dados_sim_2$IDADE[dados_sim_2$IDADE == 999] = NA 
+dados_sim_2$ESC2010[dados_sim_2$ESC2010 == 9] = NA
 
 
 # Tarefa 6. Atribuir legendas para as categorias das variáveis qualitativas investigadas na tarefa 4.
 # Exemplo: dados_sim_2$TIPOBITO = factor(dados_sim_2$TIPOBITO, levels = c(1,2), 
 # labels = c("Fetal", "Não fetal")
+dados_sim_2$TIPOBITO = factor(dados_sim_2$TIPOBITO, levels = c(1,2) , labels = 
+                                c("Fetal", "Não fetal"))
+
+dados_sim_2$SEXO = factor(dados_sim_2$SEXO, levels = c(1,2) , labels = 
+                            c("Masculino", "Feminino"))
+
+dados_sim_2$RACACOR = factor(dados_sim_2$RACACOR, levels = c(1,2,3,4,5) , labels = 
+                               c("Branca", "Preta", "Amarela", "Parda", "Indígena"))
+
+dados_sim_2$TPMORTEOCO = factor(dados_sim_2$TPMORTEOCO, levels = c(1,2,3,4,5,8) , labels = 
+                                  c("Na gravidez", "No parto","No abortamento", "Até 42 dias após o término do parto", "De 43 dias a 1 ano após o término da gestação", "Não ocorreu nestes períodos"))
+
+dados_sim_2$OBITOGRAV = factor(dados_sim_2$OBITOGRAV, levels = c(1,2) , labels = 
+                                 c("Sim", "Não"))
+
+dados_sim_2$OBITOPUERP = factor(dados_sim_2$OBITOPUERP, levels = c(1,2,3) , labels = 
+                                  c("Sim, até 42 dias após o parto", "Sim, de 43 dias a 1 ano", "Não"))
+
+dados_sim_2$TPOBITOCOR = factor(dados_sim_2$TPOBITOCOR, levels = c(1,2,3,4,5,6,7,8,9), labels = 
+                                  c("Durante a gestação", 'Durante o abortamento', 'Após o abortamento', "No parto ou até 1 hora após o parto", "No puerpério - Até 42 dias após o parto", "Entre 43 dias e até 1 ano após o parto", "A investigação não identificou o momento do óbito", "Mais de um ano após o parto", "O óbito não ocorreu nas circunstancias anteriores"))
+
+
+dados_sim_2$MORTEPARTO = factor(dados_sim_2$MORTEPARTO, levels = c(1,2,3) , labels = 
+                                 c("Antes", "Durante", "Após"))
+
+dados_sim_2$ESC2010 = factor(dados_sim_2$ESC2010, levels = c(0,1,2,3,4,5), labels = 
+                               c("Sem escolaridade", "Fundamental I", "Fundamental II", "Médio", "Superior incompleto", "Superior completo"))
+
 
 # ATENçÃO: 1. Na hora de escrever os labels, somente a primeira letra da palavra é maiúscula. Exemplo para SEXO: Feminino e Masculino
 #          2. Nesta Tarefa 6 não crie novas variáveis no banco de dados
@@ -523,9 +584,142 @@ write.csv(base_final, "SINASC_ES.csv")
 # 2. Para informações fetais utilize TIPOBITO
 # 3. Para informações neonatais utilize TIPOBITO não fetal e IDADE entre 0 e 27 dias e RACACOR
 # 4. Para informações maternas utilize TPMORTEOCO, ESC e IDADE
+library(tidyverse)
+dados_sim_torc = dados_sim_1[UF_SIM == "32",]
+TORC = dados_sim_torc %>% 
+  group_by(CODMUNRES) %>% 
+  summarise(
+    TORC = sum(if_all(everything(), ~ !is.na(.)))
+  )
+
+
+
+SIM_ES = dados_sim_2 %>% 
+  group_by(CODMUNRES) %>% 
+  summarise(
+    #IDENTIFICADORES DO BANCO DE DADOS
+    ANO = 2015,
+    NIVEL = "MUNICIPIO",
+   
+    #INFORMAÇÕES GERAIS:
+    
+    TO = n(),
+    TORCR = sum(if_all(everything(), ~ !is.na(.))),
+    TO_NN = sum(startsWith(CAUSABAS,c("V", "W", "X", "Y")), na.rm = T),
+    TO_N = sum(!startsWith(CAUSABAS,c("V", "W", "X", "Y")), na.rm = T),
+    TO_CB_I = sum(startsWith(CAUSABAS,c("A","B")), na.rm = T),
+    TO_CB_N = sum(startsWith(CAUSABAS,c("C","D")), na.rm = T),
+    TO_CB_C = sum(startsWith(CAUSABAS,c("I")), na.rm = T),
+    TO_CB_R = sum(startsWith(CAUSABAS,c("J")), na.rm = T),
+    TO_CB_O = sum(!startsWith(CAUSABAS,c("V", "W", "X", "Y","A","B","C","D","I","J")), na.rm = T),
+    TO_M = sum(SEXO == "Masculino", na.rm = T),
+    TO_F = sum(SEXO == "Feminino", na.rm = T),
+    TO_F_IF = sum(SEXO == "Masculino" & IDADE >= 415 & IDADE<= 449, na.rm = T),
+    #INFORMAÇÕES FETAIS E NEONATAIS
+    TO_FT = sum(TIPOBITO == "Fetal", na.rm = T),
+    TO_NT = sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=227, na.rm = T),
+    TO_NT_P = sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=206, na.rm = T),
+    TO_NT_T = sum(TIPOBITO == "Não fetal" & IDADE >= 207 & IDADE <=227, na.rm = T),
+    TO_PNT = sum(TIPOBITO == "Não fetal" & IDADE >= 228 & IDADE <=312, na.rm = T),
+    TO_MT_G = sum(MORTEPARTO == "Antes", na.rm = T),
+    TONT_B = sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=227 & RACACOR == "Branca", na.rm = T),
+    TONT_PT = sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=227 & RACACOR == "Preta", na.rm = T),
+    TONT_A = sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=227 & RACACOR == "Amarela", na.rm = T),
+    TONT_PD = sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=227 & RACACOR == "Parda", na.rm = T),
+    TONT_I= sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=227 & RACACOR == "Indígena", na.rm = T),
+   
+    #INFORMAÇÕES MATERNAS:
+    TO_MT = sum(TPMORTEOCO == "Na gravidez" | TPMORTEOCO == "No parto" |TPMORTEOCO == "No abortamento" |TPMORTEOCO == "Até 42 dias após o término do parto" | TPMORTEOCO == "De 43 dias a 1 ano após o término da gestação" | TPMORTEOCO == "Não ocorreu nestes períodos", na.rm = T  ),
+    TO_MT_DG = sum(TPMORTEOCO == "Na gravidez", na.rm = T),
+    TO_MT_PT = sum(TPMORTEOCO == "No parto", na.rm = T),
+    TO_MT_AB = sum(TPMORTEOCO == "No abortamento", na.rm = T),
+    TO_MT_42 = sum(TPMORTEOCO == "Até 42 dias após o término do parto", na.rm = T),
+    TO_MT_43 = sum(TPMORTEOCO == "De 43 dias a 1 ano após o término da gestação", na.rm = T),
+    TO_MT_P = sum(TPMORTEOCO == "Na gravidez" | TPMORTEOCO == "No parto" |TPMORTEOCO == "No abortamento" |TPMORTEOCO == "Até 42 dias após o término do parto", na.rm = T),
+    TO_MT_P_I = sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 |TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 |TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449, na.rm = T),
+    TO_MT_P_ES = sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Sem escolaridade"| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Sem escolaridade"|TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Sem escolaridade"|TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Sem escolaridade", na.rm = T),
+    TO_MT_P_EFI= sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental I"| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental I"|TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental I"|TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental I", na.rm = T),
+    TO_MT_P_EFII = sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental II"| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental II"|TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental II"|TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental II", na.rm = T),
+    TO_MT_P_EM = sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Médio"| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Médio"|TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Médio"|TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Médio", na.rm = T),
+    TO_MT_P_ESI = sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior incompleto"| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior incompleto"|TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior incompleto"|TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior incompleto", na.rm = T),
+    TO_MT_P_ESC = sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior completo"| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior completo"|TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior completo"|TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior completo", na.rm = T),
+    
+  )
+
+SIM_ES = merge(SIM_ES, TORC, all.x = T)
+
+SIM_ES = SIM_ES %>% 
+  relocate(CODMUNRES, .after = NIVEL)
+SIM_ES = SIM_ES %>% 
+  relocate(TORC, .after = TO)
+
+#No banco de dados apareceram alguns registros como 320000 em CODMUNRES. Nesse caso, me parecem ser NA's. Deixarei na tabela para referenciar isso.
+
+
+
+#Agora, repetindo o processo para a UF:
+
+SIM_ES_UF = dados_sim_2 %>% 
+ 
+  summarise(
+    #IDENTIFICADORES DO BANCO DE DADOS
+    ANO = 2015,
+    NIVEL = "UF",
+    CODMUNRES = 32,
+    
+    #INFORMAÇÕES GERAIS:
+    
+    TO = n(),
+    TORC = sum(SIM_ES$TORC),
+    TORCR = sum(if_all(everything(), ~ !is.na(.))),
+    TO_NN = sum(startsWith(CAUSABAS,c("V", "W", "X", "Y")), na.rm = T),
+    TO_N = sum(!startsWith(CAUSABAS,c("V", "W", "X", "Y")), na.rm = T),
+    TO_CB_I = sum(startsWith(CAUSABAS,c("A","B")), na.rm = T),
+    TO_CB_N = sum(startsWith(CAUSABAS,c("C","D")), na.rm = T),
+    TO_CB_C = sum(startsWith(CAUSABAS,c("I")), na.rm = T),
+    TO_CB_R = sum(startsWith(CAUSABAS,c("J")), na.rm = T),
+    TO_CB_O = sum(!startsWith(CAUSABAS,c("V", "W", "X", "Y","A","B","C","D","I","J")), na.rm = T),
+    TO_M = sum(SEXO == "Masculino", na.rm = T),
+    TO_F = sum(SEXO == "Feminino", na.rm = T),
+    TO_F_IF = sum(SEXO == "Masculino" & IDADE >= 415 & IDADE<= 449, na.rm = T),
+    #INFORMAÇÕES FETAIS E NEONATAIS
+    TO_FT = sum(TIPOBITO == "Fetal", na.rm = T),
+    TO_NT = sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=227, na.rm = T),
+    TO_NT_P = sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=206, na.rm = T),
+    TO_NT_T = sum(TIPOBITO == "Não fetal" & IDADE >= 207 & IDADE <=227, na.rm = T),
+    TO_PNT = sum(TIPOBITO == "Não fetal" & IDADE >= 228 & IDADE <=312, na.rm = T),
+    TO_MT_G = sum(MORTEPARTO == "Antes", na.rm = T),
+    TONT_B = sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=227 & RACACOR == "Branca", na.rm = T),
+    TONT_PT = sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=227 & RACACOR == "Preta", na.rm = T),
+    TONT_A = sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=227 & RACACOR == "Amarela", na.rm = T),
+    TONT_PD = sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=227 & RACACOR == "Parda", na.rm = T),
+    TONT_I= sum(TIPOBITO == "Não fetal" & IDADE >= 0 & IDADE <=227 & RACACOR == "Indígena", na.rm = T),
+    
+    #INFORMAÇÕES MATERNAS:
+    TO_MT = sum(TPMORTEOCO == "Na gravidez" | TPMORTEOCO == "No parto" |TPMORTEOCO == "No abortamento" |TPMORTEOCO == "Até 42 dias após o término do parto" | TPMORTEOCO == "De 43 dias a 1 ano após o término da gestação" | TPMORTEOCO == "Não ocorreu nestes períodos", na.rm = T  ),
+    TO_MT_DG = sum(TPMORTEOCO == "Na gravidez", na.rm = T),
+    TO_MT_PT = sum(TPMORTEOCO == "No parto", na.rm = T),
+    TO_MT_AB = sum(TPMORTEOCO == "No abortamento", na.rm = T),
+    TO_MT_42 = sum(TPMORTEOCO == "Até 42 dias após o término do parto", na.rm = T),
+    TO_MT_43 = sum(TPMORTEOCO == "De 43 dias a 1 ano após o término da gestação", na.rm = T),
+    TO_MT_P = sum(TPMORTEOCO == "Na gravidez" | TPMORTEOCO == "No parto" |TPMORTEOCO == "No abortamento" |TPMORTEOCO == "Até 42 dias após o término do parto", na.rm = T),
+    TO_MT_P_I = sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 |TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 |TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449, na.rm = T),
+    TO_MT_P_ES = sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Sem escolaridade"| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Sem escolaridade"|TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Sem escolaridade"|TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Sem escolaridade", na.rm = T),
+    TO_MT_P_EFI= sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental I"| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental I"|TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental I"|TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental I", na.rm = T),
+    TO_MT_P_EFII = sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental II"| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental II"|TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental II"|TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Fundamental II", na.rm = T),
+    TO_MT_P_EM = sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Médio"| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Médio"|TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Médio"|TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Médio", na.rm = T),
+    TO_MT_P_ESI = sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior incompleto"| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior incompleto"|TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior incompleto"|TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior incompleto", na.rm = T),
+    TO_MT_P_ESC = sum(TPMORTEOCO == "Na gravidez"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior completo"| TPMORTEOCO == "No parto" & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior completo"|TPMORTEOCO == "No abortamento"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior completo"|TPMORTEOCO == "Até 42 dias após o término do parto"  & IDADE >= 415 & IDADE<= 449 & ESC2010 == "Superior completo", na.rm = T),
+    
+  )
+
+SIM_ES = bind_rows(SIM_ES_UF, SIM_ES)
+
 
 
 # Tarefa 8: Exporte o banco de dados com o nome SIM_UF.csv
+
+write.csv(SIM_ES, "SIM_ES.csv")
 
 # Ao terminar a ETAPA 2 commite e envie para o repositório REMOTO com o comentário "Dados da UF e Script Etapa 2"
 # Faça um merge de script de SIM para main
@@ -559,4 +753,3 @@ write.csv(base_final, "SINASC_ES.csv")
 
 # 1. Enviar arquivos para as pastas do repositório da Professora no GitHUb
 # 2. A professora fará o empilhamentos dos dataframes
-
