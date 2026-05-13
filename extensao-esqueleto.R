@@ -386,9 +386,9 @@ base_uf = dados_sinasc_2 %>%
     TGD_PRT = sum(SEMAGESTAC < 37, na.rm = T),
     TGD_AT = sum(SEMAGESTAC >= 37 & SEMAGESTAC <=41, na.rm = T),
     TGD_PST = sum(SEMAGESTAC >= 42, na.rm = T),
-    TGD_P25 = quantile(SEMAGESTAC, probs = 0.25, na.rm= T),
-    TGD_P50= quantile(SEMAGESTAC, probs = 0.50, na.rm= T),
-    TGD_P75= quantile(SEMAGESTAC, probs = 0.75, na.rm= T),
+    DG_P25 = quantile(SEMAGESTAC, probs = 0.25, na.rm= T),
+    DG_P50= quantile(SEMAGESTAC, probs = 0.50, na.rm= T),
+    DG_P75= quantile(SEMAGESTAC, probs = 0.75, na.rm= T),
     DG_MD = mean(SEMAGESTAC, na.rm = T),
     DG_DP = sd(SEMAGESTAC, na.rm = T),
     TKC_NR = sum(KOTELCHUCK == "Não realizou pré-natal", na.rm = T),
@@ -760,8 +760,90 @@ write.csv(SIM_ES, "SIM_ES.csv")
 
 # Exporte o arquivo em formato CSV
 # Faça o commit com a mensagem "Script e dados TAREFA 3 - SIDRA"
+#---------------------------------------------------------------------------------
+library(tidyverse)
+
+#Leitura dos csv's que serão utlizados:
+
+sidra1 = read.csv2("população residente estimada - UF e municípios - 2015 - SIDRA - tabela_6579.csv")
+sidra2 = read.csv2("população residente censo 2010 - UF e municípios - total e por sexo - SIDRA - tabela_1552.csv ")
+sidra3 = read.csv2("população residente censo 2010 - por faixa etária -  UF - SIDRA - tabela_1552.csv")
+sidra4  = read.csv2("população residente censo 2010 - por faixa etária e sexo -  municípios - SIDRA - tabela_1552.csv")
+
+#Filtrando dados para apenas o ES:
+
+UF_sidra1 = substr(as.character(sidra1$CODMUNRES), 1, 2)
+sidraES1 = sidra1[UF_sidra1 == "32",]
+
+UF_sidra2 = substr(as.character(sidra2$CODMUNRES), 1, 2)
+sidraES2 = sidra2[UF_sidra2 == "32",]
+
+sidraES3 = sidra3 %>% 
+  filter(CODMUNRES== 32)
+
+UF_sidra4 = substr(as.character(sidra4$CODMUNRES), 1, 2)
+sidraES4 = sidra4[UF_sidra4 == "32",]
+#Construção de tabelas auxiliares:
+
+dados_sidra1 = sidraES1 %>% 
+  group_by(CODMUNRES) %>% 
+  summarise(
+    POPRE_T = POPRE_T
+  )
+
+dados_sidra2 = sidraES2 %>% 
+  group_by(CODMUNRES) %>% 
+  summarise(
+    POPRC_T = POPRC_T,
+    POPRC_M = POPRC_M,
+    POPRC_F = POPRC_F
+  )
 
 
+dados_sidra3 = sidraES3 %>%
+  group_by(CODMUNRES) %>% 
+   
+  summarise(
+    ANO = 2015,
+    NIVEL = "UF",
+    POPRC_15 = POP[F_IDADE == "0 a 4 anos"] + POP[F_IDADE == "5 a 9 anos"] + POP[F_IDADE == "10 a 14 anos"],
+    POPRC_15_49 = POP[F_IDADE == "15 a 19 anos"] +POP[F_IDADE == "20 a 24 anos"] +POP[F_IDADE == "25 a 29 anos"] +POP[F_IDADE == "30 a 34 anos"] +POP[F_IDADE == "35 a 39 anos"] +POP[F_IDADE == "40 a 44 anos"] +POP[F_IDADE == "45 a 49 anos"],
+    POPRC_50 = POP[F_IDADE == "50 a 54 anos"] +POP[F_IDADE == "55 a 59 anos"] +POP[F_IDADE == "60 a 64 anos"] +POP[F_IDADE == "65 a 69 anos"] +POP[F_IDADE == "70 a 74 anos"] +POP[F_IDADE == "75 a 79 anos"] +POP[F_IDADE == "80 a 89 anos"]+POP[F_IDADE == "90 a 99 anos"]+POP[F_IDADE == "100 anos ou mais"],
+    POPRC_F_15 = POPF[F_IDADE == "0 a 4 anos"] + POPF[F_IDADE == "5 a 9 anos"] + POPF[F_IDADE == "10 a 14 anos"],
+    POPRC_F_15_49 = POPF[F_IDADE == "15 a 19 anos"] +POPF[F_IDADE == "20 a 24 anos"] +POPF[F_IDADE == "25 a 29 anos"] +POPF[F_IDADE == "30 a 34 anos"] +POPF[F_IDADE == "35 a 39 anos"] +POPF[F_IDADE == "40 a 44 anos"] +POPF[F_IDADE == "45 a 49 anos"],
+    POPRC_F_50 = POPF[F_IDADE == "50 a 54 anos"] +POPF[F_IDADE == "55 a 59 anos"] +POPF[F_IDADE == "60 a 64 anos"] +POPF[F_IDADE == "65 a 69 anos"] +POPF[F_IDADE == "70 a 74 anos"] +POPF[F_IDADE == "75 a 79 anos"] +POPF[F_IDADE == "80 a 89 anos"]+POPF[F_IDADE == "90 a 99 anos"]+POPF[F_IDADE == "100 anos ou mais"],
+  )
+  
+
+dados_sidra4 = sidraES4 %>%
+  group_by(CODMUNRES) %>% 
+  
+  summarise(
+    ANO = 2015,
+    NIVEL = "MUNICIPIO",
+    POPRC_15 = POP[F_IDADE == "0 a 4 anos"] + POP[F_IDADE == "5 a 9 anos"] + POP[F_IDADE == "10 a 14 anos"],
+    POPRC_15_49 = POP[F_IDADE == "15 a 19 anos"] +POP[F_IDADE == "20 a 24 anos"] +POP[F_IDADE == "25 a 29 anos"] +POP[F_IDADE == "30 a 34 anos"] +POP[F_IDADE == "35 a 39 anos"] +POP[F_IDADE == "40 a 44 anos"] +POP[F_IDADE == "45 a 49 anos"],
+    POPRC_50 = POP[F_IDADE == "50 a 54 anos"] +POP[F_IDADE == "55 a 59 anos"] +POP[F_IDADE == "60 a 64 anos"] +POP[F_IDADE == "65 a 69 anos"] +POP[F_IDADE == "70 a 74 anos"] +POP[F_IDADE == "75 a 79 anos"] +POP[F_IDADE == "80 a 89 anos"]+POP[F_IDADE == "90 a 99 anos"]+POP[F_IDADE == "100 anos ou mais"],
+    POPRC_F_15 = POPF[F_IDADE == "0 a 4 anos"] + POPF[F_IDADE == "5 a 9 anos"] + POPF[F_IDADE == "10 a 14 anos"],
+    POPRC_F_15_49 = POPF[F_IDADE == "15 a 19 anos"] +POPF[F_IDADE == "20 a 24 anos"] +POPF[F_IDADE == "25 a 29 anos"] +POPF[F_IDADE == "30 a 34 anos"] +POPF[F_IDADE == "35 a 39 anos"] +POPF[F_IDADE == "40 a 44 anos"] +POPF[F_IDADE == "45 a 49 anos"],
+    POPRC_F_50 = POPF[F_IDADE == "50 a 54 anos"] +POPF[F_IDADE == "55 a 59 anos"] +POPF[F_IDADE == "60 a 64 anos"] +POPF[F_IDADE == "65 a 69 anos"] +POPF[F_IDADE == "70 a 74 anos"] +POPF[F_IDADE == "75 a 79 anos"] +POPF[F_IDADE == "80 a 89 anos"]+POPF[F_IDADE == "90 a 99 anos"]+POPF[F_IDADE == "100 anos ou mais"],
+  )
+
+juncao1 = bind_rows(dados_sidra3, dados_sidra4)
+
+juncao2 = merge(dados_sidra1, juncao1)
+
+SIDRA_ES = merge(juncao2, dados_sidra2)
+
+
+SIDRA_ES = SIDRA_ES %>% 
+  relocate(ANO, .before = CODMUNRES) %>% 
+  relocate(NIVEL, .after = ANO) %>% 
+  relocate(c(POPRC_T, POPRC_M, POPRC_F), .after = POPRE_T)
+           
+
+
+view(SIDRA_ES)
 #####################################################################################################
 # ETAPA 4: GERAR BANCO DE DADOS FINAL DO ESTADO, BASEADO NAS ANÁLISES DE SINASC, SIM, IBGE, SNIS,...
 ######################################################################################################
