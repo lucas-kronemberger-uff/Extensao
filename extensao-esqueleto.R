@@ -841,9 +841,11 @@ SIDRA_ES = SIDRA_ES %>%
   relocate(NIVEL, .after = ANO) %>% 
   relocate(c(POPRC_T, POPRC_M, POPRC_F), .after = POPRE_T)
            
+#Exportação dos dados da tarefa 3:
+
+write.csv(SIDRA_ES, "SIDRA_ES.csv")
 
 
-view(SIDRA_ES)
 #####################################################################################################
 # ETAPA 4: GERAR BANCO DE DADOS FINAL DO ESTADO, BASEADO NAS ANÁLISES DE SINASC, SIM, IBGE, SNIS,...
 ######################################################################################################
