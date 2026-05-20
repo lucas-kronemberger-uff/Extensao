@@ -854,7 +854,67 @@ write.csv(SIDRA_ES, "SIDRA_ES.csv")
 # 4 POPR_RA
 # 5 POPR_RE
 
+library(tidyverse)
+
+#Leitura do arquivo SINISA:
+
+dados_sinisa = read.csv("agua e esgoto - município - 2015.csv")
+#Aqui, no caso, editei a formatação do documento, removendo os pontos dos números, externamente com excel.
+
+#Filtrar os dados para apenas o ES:
+
+dados_sinisa_ES = dados_sinisa %>% 
+  filter(Estado == "ES")
+
+#Mudança de tipo de variável para as variáveis quantitativas:
+
+dados_sinisa_ES$POPR_RA = as.numeric(dados_sinisa_ES$POPR_RA)
+dados_sinisa_ES$POPR_RE = as.numeric(dados_sinisa_ES$POPR_RE)
+
+
+
+
+
+
+
+
+
+#Criação de banco de dados com os municípios do ES:
+
+dados_sinisa_M_ES = dados_sinisa_ES %>% 
+  group_by(CODMUNRES) %>% 
+  summarise(
+    ANO = 2015,
+    NIVEL = "MUNICIPIO",
+    POPR_RA = POPR_RA,
+    POPR_RE = POPR_RE
+  ) %>% 
+  relocate(CODMUNRES, .after = NIVEL)
+
+
+#Criação de banco de dados com os dados gerais do ES:
+
+dados_sinisa_UF_ES = dados_sinisa_ES %>% 
+  summarise(
+    ANO = 2015,
+    NIVEL = "UF",
+    CODMUNRES = 32,
+    POPR_RA = sum(POPR_RA , na.rm = T),
+    POPR_RE = sum(POPR_RE, na.rm = T)
+  )
+
+#Juncao dos dados:
+
+SINISA_ES = bind_rows(dados_sinisa_UF_ES, dados_sinisa_M_ES)
+
+
+
+
+
 # Exporte o arquivo em formato CSV
+
+write_csv(SINISA_ES, "SINISA_ES.csv")
+
 # Faça o commit com a mensagem "Script e dados TAREFA 3 - SINISA"
 
 # Tarefa 3: Acesso aos bancos de dados do ATLAS  e obtenção da informação
