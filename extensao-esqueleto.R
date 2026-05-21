@@ -931,10 +931,70 @@ write_csv(SINISA_ES, "SINISA_ES.csv")
 # 5 IDHM_CA
 # 6 IDHM_CA_M
 # 7 IDHM_CA_F
+#---------------------------------------------------------------------------------------------
+library(tidyverse)
+
+codigos = read.csv2("códigos dos municípios - 2010.csv")
+idhm_UF = read.csv2("IDHM - 2010 (CENSO) e 2015 (PNAD) - total e por sexo - UF - Atlas Brasil.csv")
+idhm_M = read.csv2("IDHM - 2010 - municípios - Atlas Brasil.csv")
+#Remoção colunas desnecessárias de idhm_M
+idhm_M = idhm_M %>% 
+  filter(endsWith(município, "(ES)")) %>% 
+  select(-(3:687)) %>% 
+  mutate(across(
+    município,
+    ~ str_sub(as.character(.x), end = -6)
+  ))
+ 
+#Remoção colunas desnecessárias de codigos
+
+codigos= codigos %>% 
+  select(-(3))
+#Junção de idhm_M e codigos
+
+idhm_codigos = merge(idhm_M, codigos)
+
+#Remoção de duplicatas causadas por cidades possuirem nomes iguais
+
+idhm_codigos = idhm_codigos %>% 
+  filter(startsWith(as.character(CODMUNRES), "32"))
+
+#Remoção de colunas e linhas desnecessárias de idhm_UF
+
+idhm_UF = idhm_UF %>% 
+  select(-(8:702)) %>% 
+  filter(UF == "Espírito Santo")
+
+
+atlas_municipios = idhm_codigos %>% 
+  summarise(
+    ANO = 2015,
+    NIVEL = "MUNICIPIO",
+    CODMUNRES = CODMUNRES,
+    IDHM_A = NA,
+    IDHM_CA = IDHM_2010,
+    IDHM_CA_M = NA,
+    IDHM_CA_F = NA
+)
+
+
+atlas_UF = idhm_UF %>% 
+  summarise(
+    ANO = 2015,
+    NIVEL = "UF",
+    CODMUNRES = 32,
+    IDHM_A = IDHM_2015,
+    IDHM_CA = IDHM_2010,
+    IDHM_CA_M = IDHM_2010_M,
+    IDHM_CA_F = IDHM_2010_F
+  )
+
+
+ATLAS_ES = bind_rows(atlas_UF, atlas_municipios)
 
 # Exporte o arquivo em formato CSV# Faça o commit com a mensagem "Script e dados TAREFA 3 - ATLAS"
 
-
+write.csv(ATLAS_ES, "ATLAS_ES.csv")
 
 #####################################################################################################
 # ETAPA 4: GERAR BANCO DE DADOS FINAL DO ESTADO, BASEADO NAS ANÁLISES DE SINASC, SIM, IBGE, SNIS,...
