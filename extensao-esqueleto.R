@@ -854,7 +854,67 @@ write.csv(SIDRA_ES, "SIDRA_ES.csv")
 # 4 POPR_RA
 # 5 POPR_RE
 
+library(tidyverse)
+
+#Leitura do arquivo SINISA:
+
+dados_sinisa = read.csv("agua e esgoto - município - 2015.csv")
+#Aqui, no caso, editei a formatação do documento, removendo os pontos dos números, externamente com excel.
+
+#Filtrar os dados para apenas o ES:
+
+dados_sinisa_ES = dados_sinisa %>% 
+  filter(Estado == "ES")
+
+#Mudança de tipo de variável para as variáveis quantitativas:
+
+dados_sinisa_ES$POPR_RA = as.numeric(dados_sinisa_ES$POPR_RA)
+dados_sinisa_ES$POPR_RE = as.numeric(dados_sinisa_ES$POPR_RE)
+
+
+
+
+
+
+
+
+
+#Criação de banco de dados com os municípios do ES:
+
+dados_sinisa_M_ES = dados_sinisa_ES %>% 
+  group_by(CODMUNRES) %>% 
+  summarise(
+    ANO = 2015,
+    NIVEL = "MUNICIPIO",
+    POPR_RA = POPR_RA,
+    POPR_RE = POPR_RE
+  ) %>% 
+  relocate(CODMUNRES, .after = NIVEL)
+
+
+#Criação de banco de dados com os dados gerais do ES:
+
+dados_sinisa_UF_ES = dados_sinisa_ES %>% 
+  summarise(
+    ANO = 2015,
+    NIVEL = "UF",
+    CODMUNRES = 32,
+    POPR_RA = sum(POPR_RA , na.rm = T),
+    POPR_RE = sum(POPR_RE, na.rm = T)
+  )
+
+#Juncao dos dados:
+
+SINISA_ES = bind_rows(dados_sinisa_UF_ES, dados_sinisa_M_ES)
+
+
+
+
+
 # Exporte o arquivo em formato CSV
+
+write_csv(SINISA_ES, "SINISA_ES.csv")
+
 # Faça o commit com a mensagem "Script e dados TAREFA 3 - SINISA"
 
 # Tarefa 3: Acesso aos bancos de dados do ATLAS  e obtenção da informação
@@ -871,10 +931,70 @@ write.csv(SIDRA_ES, "SIDRA_ES.csv")
 # 5 IDHM_CA
 # 6 IDHM_CA_M
 # 7 IDHM_CA_F
+#---------------------------------------------------------------------------------------------
+library(tidyverse)
+
+codigos = read.csv2("códigos dos municípios - 2010.csv")
+idhm_UF = read.csv2("IDHM - 2010 (CENSO) e 2015 (PNAD) - total e por sexo - UF - Atlas Brasil.csv")
+idhm_M = read.csv2("IDHM - 2010 - municípios - Atlas Brasil.csv")
+#Remoção colunas desnecessárias de idhm_M
+idhm_M = idhm_M %>% 
+  filter(endsWith(município, "(ES)")) %>% 
+  select(-(3:687)) %>% 
+  mutate(across(
+    município,
+    ~ str_sub(as.character(.x), end = -6)
+  ))
+ 
+#Remoção colunas desnecessárias de codigos
+
+codigos= codigos %>% 
+  select(-(3))
+#Junção de idhm_M e codigos
+
+idhm_codigos = merge(idhm_M, codigos)
+
+#Remoção de duplicatas causadas por cidades possuirem nomes iguais
+
+idhm_codigos = idhm_codigos %>% 
+  filter(startsWith(as.character(CODMUNRES), "32"))
+
+#Remoção de colunas e linhas desnecessárias de idhm_UF
+
+idhm_UF = idhm_UF %>% 
+  select(-(8:702)) %>% 
+  filter(UF == "Espírito Santo")
+
+
+atlas_municipios = idhm_codigos %>% 
+  summarise(
+    ANO = 2015,
+    NIVEL = "MUNICIPIO",
+    CODMUNRES = CODMUNRES,
+    IDHM_A = NA,
+    IDHM_CA = IDHM_2010,
+    IDHM_CA_M = NA,
+    IDHM_CA_F = NA
+)
+
+
+atlas_UF = idhm_UF %>% 
+  summarise(
+    ANO = 2015,
+    NIVEL = "UF",
+    CODMUNRES = 32,
+    IDHM_A = IDHM_2015,
+    IDHM_CA = IDHM_2010,
+    IDHM_CA_M = IDHM_2010_M,
+    IDHM_CA_F = IDHM_2010_F
+  )
+
+
+ATLAS_ES = bind_rows(atlas_UF, atlas_municipios)
 
 # Exporte o arquivo em formato CSV# Faça o commit com a mensagem "Script e dados TAREFA 3 - ATLAS"
 
-
+write.csv(ATLAS_ES, "ATLAS_ES.csv")
 
 #####################################################################################################
 # ETAPA 4: GERAR BANCO DE DADOS FINAL DO ESTADO, BASEADO NAS ANÁLISES DE SINASC, SIM, IBGE, SNIS,...
