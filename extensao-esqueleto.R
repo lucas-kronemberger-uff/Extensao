@@ -448,15 +448,15 @@ base_uf = dados_sinasc_2 %>%
 
 
 #Junção da linha referente à UF e a base com os municípios
-base_final = bind_rows(base_uf,
+SINASC_ES = bind_rows(base_uf,
                        base)
 
 
 
 # Tarefa 11: Exporte o banco de dados com o nome SINASC_UF.csv
 
-write.csv(base_final, "SINASC_UF.csv")
-write.csv(base_final, "SINASC_ES.csv")
+
+write.csv(SINASC_ES, "SINASC_ES.csv")
 
 
 # Ao terminar a ETAPA 1 commite e envie para o repositório REMOTO com o comentário "Dados da UF e Script Etapa 1"
@@ -945,7 +945,7 @@ idhm_M = idhm_M %>%
     município,
     ~ str_sub(as.character(.x), end = -6)
   ))
- 
+
 #Remoção colunas desnecessárias de codigos
 
 codigos= codigos %>% 
@@ -975,7 +975,7 @@ atlas_municipios = idhm_codigos %>%
     IDHM_CA = IDHM_2010,
     IDHM_CA_M = NA,
     IDHM_CA_F = NA
-)
+  )
 
 
 atlas_UF = idhm_UF %>% 
@@ -996,21 +996,23 @@ ATLAS_ES = bind_rows(atlas_UF, atlas_municipios)
 
 write.csv(ATLAS_ES, "ATLAS_ES.csv")
 
-#####################################################################################################
-# ETAPA 4: GERAR BANCO DE DADOS FINAL DO ESTADO, BASEADO NAS ANÁLISES DE SINASC, SIM, IBGE, SNIS,...
-######################################################################################################
-# Só inicie esta Etapa quando a professora orientar
-# ESTANDO NA BRANCH SINASC, NÃO ALTERE NADA NO SCRIPT REFERENTE A ETAPA 4
-
-# Cada aluno gerar um dataframe de uma única linha (referente ao seu estado) com as variáveis na ordem indicada pela professora
+################################################################
+# ETAPA 4: GERAR BANCO DE DADOS FINAL DO ESTADO COM DADOS DO SIDRA, ATLAS, SINASC, SIM, SINISA E INDICADORES
+################################################################
 
 
+# Tarefa 1: Fazer o merge dos bancos de dados criados nas etapas anteriores (SIDRA_UF, ATLAS_ UF,  SINASC_UF, SIM_UF e SINISA_UF), 
+# sendo que as variáveis deverão seguir a ordem
 
-############################################################################################
-# ETAPA 5: EMPILHAMENTO DOS DATAFRAMES DE CADA ESTADO, GERANDO UM DATAFRAME DE 27 LINHAS
-############################################################################################
-# Só inicie esta Etapa quando a professora orientar
-# ESTANDO NA BRANCH SINASC, NÃO ALTERE NADA NO SCRIPT REFERENTE A ETAPA 5
+# ANO, NIVEL, CODMUNRES (uma única vez), variáveis do SIDRA, do ATLAS, do SINASC, do SIM e da SINISA. No merge deve constar 
+# qualquer município que esteja em pelo menos um dos bancos
 
-# 1. Enviar arquivos para as pastas do repositório da Professora no GitHUb
-# 2. A professora fará o empilhamentos dos dataframes
+# Chamar o banco de dados de DA_UF
+
+# Após o merge dos bancos, fazer commit “Script e dados agregados da UF”
+
+
+# Tarefa 2: Acrescentar no banco DA_UF os indicadores TFG, TMG, RMM, TMM, TMM_P, TMN, TMN_P, TMN_T e TMI e chamar o banco 
+# de BDEM_UF_2015
+
+# Após a criação do banco, fazer commit “Script e dados BDEM_UF_2015”
