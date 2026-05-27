@@ -427,9 +427,9 @@ base_uf = dados_sinasc_2 %>%
     TRRC_A = sum(RACACOR == "Amarela", na.rm = T),
     TRRC_PD = sum(RACACOR == "Parda", na.rm = T),
     TRRC_I = sum(RACACOR == "Indígena", na.rm = T),
-    TRP_BP = sum(PESO < 2500),
-    TRP_N = sum(PESO >= 2500 & PESO<4000),
-    TRP_M = sum(PESO>=4000),
+    TRP_BP = sum(PESO < 2500, na.rm = T),
+    TRP_N = sum(PESO >= 2500 & PESO<4000, na.rm = T),
+    TRP_M = sum(PESO>=4000, na.rm = T),
     PESO_P25 = quantile(PESO, probs = 0.25, na.rm= T),
     PESO_P50 = quantile(PESO, probs = 0.50, na.rm= T),
     PESO_P75 = quantile(PESO, probs = 0.75, na.rm= T),
@@ -1006,6 +1006,46 @@ write.csv(ATLAS_ES, "ATLAS_ES.csv")
 
 # ANO, NIVEL, CODMUNRES (uma única vez), variáveis do SIDRA, do ATLAS, do SINASC, do SIM e da SINISA. No merge deve constar 
 # qualquer município que esteja em pelo menos um dos bancos
+
+#Criação de coluna auxiliar, já que alguns CODMUNRES tem 7 dígitos e outros 6:
+
+library(tidyverse)
+
+SINASC_ES = SINASC_ES %>%
+  mutate(codmun6 = substr(as.character(CODMUNRES), 1, 6))
+
+SINISA_ES = SINISA_ES %>%
+  mutate(codmun6 = substr(as.character(CODMUNRES), 1, 6))
+
+SIM_ES = SIM_ES %>%
+  mutate(codmun6 = substr(as.character(CODMUNRES), 1, 6))
+
+ATLAS_ES = ATLAS_ES %>%
+  mutate(codmun6 = substr(as.character(CODMUNRES), 1, 6))
+
+SIDRA_ES = SIDRA_ES %>%
+  mutate(codmun6 = substr(as.character(CODMUNRES), 1, 6))
+
+#Criação dos dados agregados:
+
+DA_ES = SIDRA_ES %>% 
+  merge(ATLAS_ES, by = "codmun6") %>% 
+  merge(SINASC_ES, by = "codmun6") %>% 
+  merge(SIM_ES, by = "codmun6") %>% 
+  merge(SINISA_ES, by = "codmun6")
+
+#Remoção de colunas indesejadas
+DA_ES = DA_ES %>% 
+  select(-ANO.x, -ANO.y, -CODMUNRES.x, -CODMUNRES.y, -CODMUNRES, -NIVEL.x, -NIVEL.y)
+
+#CODMUNRES, por padrão, será adotado com os primeiros 6 dígitos.
+DA_ES = DA_ES %>% 
+  relocate(NIVEL, .before = codmun6) %>% 
+  relocate(ANO, .before = NIVEL) %>% 
+  rename(CODMUNRES = codmun6)
+
+
+
 
 # Chamar o banco de dados de DA_UF
 
